@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "ocrtotopic"
 version = "0.1.0"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "WoojungKim", email = "kwj0507@gmail.com" }
 ]
 description = "A tool for processing PDFs with OCR and text analysis"
 readme = "README.md"
