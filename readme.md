@@ -6,7 +6,7 @@ A Python package that processes PDF documents through OCR (Optical Character Rec
 
 1. Create and activate a Conda environment:
 ```
-conda create -n ocrtotopic python=3.8
+conda create -n ocrtotopic python=3.11
 conda activate ocrtotopic
 ```
 
