@@ -14,7 +14,7 @@ conda activate ocrtotopic
 
 3. Clone and install the package:
 ```
-git clone https://github.com/yourusername/ocrtotopic.git
+git clone
 cd ocrtotopic
 pip install -e .
 ```
