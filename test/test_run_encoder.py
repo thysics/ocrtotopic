@@ -1,6 +1,7 @@
 import unittest
 import sys
 from pathlib import Path
+
 # Add parent directory to Python path to access scripts directory
 root_dir = Path(__file__).parent.parent
 sys.path.append(str(root_dir))
@@ -13,7 +14,7 @@ class TestWordEncoder(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures before each test method."""
         self.encoder = WordEncoder()
-        
+
         # Sample text from the art catalog
         self.sample_text = """LYONEL FEININGER
         Born in New York, 1870
@@ -43,32 +44,31 @@ class TestWordEncoder(unittest.TestCase):
         """Test the clean_text method."""
         # Test basic cleaning
         self.assertEqual(
-            self.encoder.clean_text("LYONEL FEININGER"),
-            "lyonel feininger"
+            self.encoder.clean_text("LYONEL FEININGER"), "lyonel feininger"
         )
-        
+
         # Test multiple spaces and special characters
         self.assertEqual(
             self.encoder.clean_text("Born in    New   York,  1870!"),
-            "born in new york 1870"
+            "born in new york 1870",
         )
-        
+
         # Test newlines and tabs
         self.assertEqual(
             self.encoder.clean_text("Chicago\tTribune\nand German"),
-            "chicago tribune and german"
+            "chicago tribune and german",
         )
-        
+
         # Test hyphens preservation
         self.assertEqual(
             self.encoder.clean_text("Walraff-Richartz Museum"),
-            "walraff-richartz museum"
+            "walraff-richartz museum",
         )
-        
+
         # Test multiple punctuation and special characters
         self.assertEqual(
             self.encoder.clean_text("Collection J.I B. Neumann, New York!!!"),
-            "collection ji b neumann new york"
+            "collection ji b neumann new york",
         )
 
     def test_add_phrases(self):
@@ -79,11 +79,11 @@ class TestWordEncoder(unittest.TestCase):
             "chicago tribune",
             "van gogh",
             "detroit institute of art",
-            "summer clouds"
+            "summer clouds",
         ]
-        
+
         self.encoder.add_phrases(test_phrases)
-        
+
         # Process the sample text
         processed_text = self.encoder.preprocess_text_with_phrases(self.sample_text)
 
@@ -93,54 +93,51 @@ class TestWordEncoder(unittest.TestCase):
         self.assertIn("van_gogh", processed_text)
         self.assertIn("detroit_institute_of_art", processed_text)
         self.assertIn("summer_clouds", processed_text)
-        
+
         # Test that phrases are case-insensitive
         test_text = "NEW YORK and New York and new york"
         processed_case_text = self.encoder.preprocess_text_with_phrases(test_text)
-        self.assertEqual(
-            processed_case_text,
-            "new_york and new_york and new_york"
-        )
-        
+        self.assertEqual(processed_case_text, "new_york and new_york and new_york")
+
         # Test that longer phrases are matched first
-        self.encoder.add_phrases(["detroit", "detroit institute", "detroit institute of art"])
-        processed_multi = self.encoder.preprocess_text_with_phrases("Detroit Institute of Art")
+        self.encoder.add_phrases(
+            ["detroit", "detroit institute", "detroit institute of art"]
+        )
+        processed_multi = self.encoder.preprocess_text_with_phrases(
+            "Detroit Institute of Art"
+        )
         self.assertIn("detroit_institute_of_art", processed_multi)
         self.assertIn("detroit_institute", processed_multi)
-        
+
         # Test vocabulary counting with phrases
         vocab_counts = self.encoder.count_vocabulary(self.sample_text)
-        
+
         # Check that phrases are counted as single units
         self.assertIn("new york", vocab_counts)
         self.assertNotIn("new", vocab_counts)
         self.assertNotIn("york", vocab_counts)
         self.assertIn("detroit institute of art", vocab_counts)
         self.assertNotIn("detroit institute", vocab_counts)
-        
+
         # Test matching whole words only
         test_text = "newspaper newyork new york"
         processed_boundary = self.encoder.preprocess_text_with_phrases(test_text)
-        self.assertEqual(
-            processed_boundary,
-            "newspaper newyork new_york"
-        )
+        self.assertEqual(processed_boundary, "newspaper newyork new_york")
 
     def test_edge_cases(self):
         """Test edge cases for both methods."""
         # Empty text
         self.assertEqual(self.encoder.clean_text(""), "")
-        
+
         # Text with only spaces
         self.assertEqual(self.encoder.clean_text("   "), "")
-        
+
         # Empty phrases list
         self.encoder.add_phrases([])
         self.assertEqual(
-            self.encoder.preprocess_text_with_phrases("some text"),
-            "some text"
+            self.encoder.preprocess_text_with_phrases("some text"), "some text"
         )
-        
+
         # Phrases with special characters
         self.encoder.add_phrases(["J.B. Neumann", "W.R. Valentiner"])
         processed = self.encoder.preprocess_text_with_phrases(
@@ -149,5 +146,6 @@ class TestWordEncoder(unittest.TestCase):
         self.assertIn("jb_neumann", processed)
         self.assertIn("wr_valentiner", processed)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main(verbosity=2)
