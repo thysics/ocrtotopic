@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hrepo-core"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "ocrtotopic"
@@ -24,11 +24,9 @@ dependencies = [
     "python-doctr",  # For OCR processing
     "torch",         # Required by doctr
     "spacy",        # For text processing
-    "pyyaml",       # For config file handling
     "tqdm",         # For progress bars
     "pathlib",      # For path handling
-    "typing",       # For type hints
-    "concurrent-futures",  # For parallel processing
+    "rich",
 ]
 
 [project.optional-dependencies]
@@ -69,5 +67,6 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 
-[tool.hatch.build.targets.wheel]
-packages = ["scripts"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "scripts*", "test*"]
